@@ -152,7 +152,12 @@
         terms.push(idTerm);
       }
     }
-    return prefix + terms.join('/');
+
+    // If the last term of the module ID doesn't contain an extension
+    // append ".js" at the end.
+    var lastTerm = terms.slice(-1)[0];
+    var extension = lastTerm && lastTerm.indexOf('.') === -1 ? '.js' : '';
+    return prefix + terms.join('/') + extension;
   }
 
   function _require(id) {

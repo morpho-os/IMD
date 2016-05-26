@@ -81,7 +81,7 @@
     }
 
     if (script && script.hasAttribute('src')) {
-      return new URL(script.getAttribute('src'), doc.baseURI).toString();
+      return new URL(script.getAttribute('src'), doc.baseURI).pathname;
     }
 
     return doc.baseURI;

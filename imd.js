@@ -44,7 +44,8 @@
       throw new TypeError('Please use / as module path delimiters');
     }
     if (id in _modules) {
-      throw new Error('The module "' + id + '" has already been defined');
+      //throw new Error('The module "' + id + '" has already been defined');
+      return;
     }
     // Extract the entire module path up to the file name. Aka `dirname()`.
     //

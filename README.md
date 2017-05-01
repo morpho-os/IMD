@@ -10,12 +10,12 @@ IMD can be used with TypeScript applications when:
 
 ## Usage example
 
-```
+```sh
 #################################
 # 1. Create the project directory
 
-mkdir tmp
-cd tmp
+mkdir imd-example
+cd imd-example
 
 
 ################
@@ -31,7 +31,7 @@ npm install --save morpho-os/imd
 cat <<OUT > index.html
 <h1>IMD example</h1>
 
-<script src="node_modules/imd/imd.js"><script>
+<script src="node_modules/imd/imd.js"></script>
 <script src="index.js"></script>
 OUT
 

@@ -1,0 +1,22 @@
+{
+  "name": "imd",
+  "version": "1.0.0",
+  "description": "Minimalistic AMD-compatible module loader",
+  "main": "imd.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/morpho-os/imd.git"
+  },
+  "keywords": [
+    "amd",
+    "module-loader"
+  ],
+  "author": "The Polymer Authors and community (patches)",
+  "license": "SEE LICENSE IN LICENSE.txt"
+}

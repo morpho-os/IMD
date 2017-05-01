@@ -155,9 +155,8 @@
 
     // If the last term of the module ID doesn't contain an extension
     // append ".js" at the end.
-    var lastTerm = terms.slice(-1)[0];
-    var extension = lastTerm && lastTerm.indexOf('.') === -1 ? '.js' : '';
-    return prefix + terms.join('/') + extension;
+    var path = terms.join('/');
+    return prefix + (path.substr(-3) !== '.js' ? path + '.js' : path);
   }
 
   function _require(id) {

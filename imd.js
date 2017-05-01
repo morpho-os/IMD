@@ -153,8 +153,7 @@
       }
     }
 
-    // If the last term of the module ID doesn't contain an extension
-    // append ".js" at the end.
+    // Append the .js extension if the path does not end with it.
     var path = terms.join('/');
     return prefix + (path.substr(-3) !== '.js' ? path + '.js' : path);
   }

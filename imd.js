@@ -152,10 +152,7 @@
         terms.push(idTerm);
       }
     }
-
-    // Append the .js extension if the path does not end with it.
-    var path = terms.join('/');
-    return prefix + (path.substr(-3) !== '.js' ? path + '.js' : path);
+    return prefix + terms.join('/');
   }
 
   function _require(id) {

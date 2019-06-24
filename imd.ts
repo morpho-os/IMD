@@ -12,14 +12,15 @@
 
 /// <reference path="./index.d.ts"/>
 
-(function (scope: Window) {
-    'use strict';
+interface Document {
+    readonly _currentScript: HTMLScriptElement | SVGScriptElement;
+}
 
-    /** @type {Object<key, *>} A mapping of ids to modules. */
-    // tslint:disable-next-line:variable-name
-    const _modules = Object.create(null);
+(function (globalScope: Window) {
+    "use strict";
 
-    // `define`
+    /** A mapping of ids to modules. */
+    const _loadedModules: Record<AmdModuleId, AmdModule> = Object.create(null);
 
     /**
      * An AMD-compliant implementation of `define` that does not perform loading.
@@ -29,44 +30,44 @@
      * Dependencies must be loaded prior to calling `define`, or you will receive
      * an error.
      *
-     * @param {string=} id The id of the module being defined. If not provided,
+     * @param moduleId The id of the module being defined. If not provided,
      *     one will be given to the module based on the document it was called in.
-     * @param {Array<string>=} dependencies A list of module ids that should be
+     * @param dependencies A list of module ids that should be
      *     exposed as dependencies of the module being defined.
-     * @param {function(...*)|*} factory A function that is given the exported
+     * @param factory A function that is given the exported
      *     values for `dependencies`, in the same order. Alternatively, you can
      *     pass the exported value directly.
      */
-    function define(id: string | string[] | Factory, dependencies: string[] | Factory, factory?: Factory): any {
+    function define(moduleId: AmdModuleId | DependentFromAmdModuleId[] | AmdModuleFactory, dependencies: DependentFromAmdModuleId[] | AmdModuleFactory, factory?: AmdModuleFactory): any {
         if (!factory) {
-            factory = <Factory>(dependencies || id);
+            factory = <AmdModuleFactory>(dependencies || moduleId);
         }
-        if (Array.isArray(id)) {
-            dependencies = id;
+        if (Array.isArray(moduleId)) {
+            dependencies = moduleId;
         }
-        if (typeof id !== 'string') {
-            id = _inferModuleId();
+        if (typeof moduleId !== 'string') {
+            moduleId = _inferModuleId();
         }
         // TODO(nevir): Just support \ as path separators too. Yay Windows!
-        if (id.indexOf('\\') !== -1) {
+        if (moduleId.indexOf('\\') !== -1) {
             throw new TypeError('Please use / as module path delimiters');
         }
-        if (id in _modules) {
-            throw new Error('The module "' + id + '" has already been defined');
+        if (moduleId in _loadedModules) {
+            throw new Error('The module "' + moduleId + '" has already been defined');
         }
         // Extract the entire module path up to the file name. Aka `dirname()`.
         //
         // TODO(nevir): This is naive; doesn't support the vulcanize case.
-        let base = id.match(/^(.*?)[^\/]*$/)[1];
+        let base = (<RegExpMatchArray>moduleId.match(/^(.*?)[^\/]*$/))[1];
         if (base === '') {
-            base = id;
+            base = moduleId;
         }
-        _modules[id] = _runFactory(id, base, dependencies, factory);
-        return _modules[id];
+        _loadedModules[moduleId] = _runFactory(moduleId, base, dependencies, factory);
+        return _loadedModules[moduleId];
     }
 
     // Semi-private. We expose this for tests & introspection.
-    define._modules = _modules;
+    define._modules = _loadedModules;
 
     /**
      * Let other implementations know that this is an AMD implementation.
@@ -76,11 +77,11 @@
 
     // Utility
 
-    /** @return {string} A module id inferred from the current document/import. */
-    function _inferModuleId(): string {
+    /** @return A module id inferred from the current document/import. */
+    function _inferModuleId(): AmdModuleId {
         const script = document._currentScript || document.currentScript;
         if (script && script.hasAttribute('as')) {
-            return script.getAttribute('as');
+            return <AmdModuleId>script.getAttribute('as');
         }
 
         const doc = script && script.ownerDocument || document;
@@ -89,7 +90,7 @@
         }
 
         if (script && script.hasAttribute('src')) {
-            return new URL(script.getAttribute('src'), doc.baseURI).pathname;
+            return new URL(<string>script.getAttribute('src'), doc.baseURI).pathname;
         }
 
         return doc.baseURI;
@@ -98,18 +99,17 @@
     /**
      * Calls `factory` with the exported values of `dependencies`.
      *
-     * @param {string} moduleId The id of the module defined by the factory.
-     * @param {string} base The base path that modules should be relative to.
-     * @param {Array<string>} dependencies
-     * @param {function(...*)|*} factory
+     * @param moduleId The id of the module defined by the factory.
+     * @param base The base path that modules should be relative to.
+     * @param dependencies
+     * @param factory
      */
-    function _runFactory(moduleId: string, base: string, dependencies: string[] | Factory, factory: Factory): any[] {
+    function _runFactory(moduleId: AmdModuleId, base: AmdModuleId, dependencies: DependentFromAmdModuleId[] | AmdModuleFactory, factory: AmdModuleFactory): AmdModule {
         if (typeof factory !== 'function') {
             return factory;
         }
-
         const exports = {};
-        const module: Module = {id: moduleId};
+        const module: AmdModule = {id: moduleId};
         let modules;
 
         if (Array.isArray(dependencies)) {
@@ -136,11 +136,11 @@
     /**
      * Resolve `id` relative to `base`
      *
-     * @param {string} base The module path/URI that acts as the relative base.
-     * @param {string} id The module ID that should be relatively resolved.
-     * @return {string} The expanded module ID.
+     * @param base The module path/URI that acts as the relative base.
+     * @param id The module ID that should be relatively resolved.
+     * @return The expanded module ID.
      */
-    function _resolveRelativeId(base: string, id: string): string {
+    function _resolveRelativeId(base: AmdModuleId, id: AmdModuleId): AmdModuleId {
         if (id[0] !== '.') {
             return id;
         }
@@ -148,12 +148,12 @@
         // We need to be careful to only process the path of URLs. This regex
         // strips off the URL protocol and domain, leaving us with just the URL's
         // path.
-        const match = base.match(/^([^\/]*\/\/[^\/]+\/)?(.*?)\/?$/);
+        const match = <RegExpMatchArray>base.match(/^([^\/]*\/\/[^\/]+\/)?(.*?)\/?$/);
         const prefix = match[1] || '';
         // We start with the base, and then mutate it into the final path.
         let terms = match[2] ? match[2].split('/') : [];
         // Split the terms, ignoring any leading or trailing path separators.
-        const idTerms = id.match(/^\/?(.*?)\/?$/)[1].split('/');
+        const idTerms = (<RegExpMatchArray>id.match(/^\/?(.*?)\/?$/))[1].split('/');
         for (let i = 0; i < idTerms.length; i++) {
             const idTerm = idTerms[i];
             if (idTerm === '.') {
@@ -167,14 +167,13 @@
         return prefix + terms.join('/');
     }
 
-    function _require(id: string): Module {
-        if (!(id in _modules)) {
+    function _require(id: AmdModuleId): AmdModule {
+        if (!(id in _loadedModules)) {
             throw new ReferenceError('The module "' + id + '" has not been loaded');
         }
-        return _modules[id];
+        return _loadedModules[id];
     }
 
     // Exports
-    scope.define = define;
-
+    globalScope.define = define;
 })(window);

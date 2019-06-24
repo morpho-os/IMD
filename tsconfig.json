@@ -1,26 +1,19 @@
 {
     "compilerOptions": {
-        "allowJs": true,
-        "alwaysStrict": true,
-        "experimentalDecorators": true,
         "forceConsistentCasingInFileNames": true,
+        "strict": true,
         "module": "none",
         "moduleResolution": "node",
-        "newLine": "lf",
         "noEmitOnError": true,
-        "noImplicitAny": true,
         "noImplicitReturns": true,
-        "noImplicitThis": true,
-        "noUnusedLocals": false,
-        "preserveConstEnums": true,
-        "pretty": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
         "removeComments": true,
         "sourceMap": true,
-        "strictNullChecks": false,
+        "inlineSourceMap": false,
         "target": "es5",
         "lib": [
             "dom",
-            "es2015.promise",
             "es5"
         ]
     }

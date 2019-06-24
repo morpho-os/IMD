@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "alwaysStrict": true,
+        "experimentalDecorators": true,
+        "forceConsistentCasingInFileNames": true,
+        "module": "none",
+        "moduleResolution": "node",
+        "newLine": "lf",
+        "noEmitOnError": true,
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noUnusedLocals": false,
+        "preserveConstEnums": true,
+        "pretty": true,
+        "removeComments": true,
+        "sourceMap": true,
+        "strictNullChecks": false,
+        "target": "es5",
+        "lib": [
+            "dom",
+            "es2015.promise",
+            "es5"
+        ]
+    }
+}

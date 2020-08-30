@@ -80,8 +80,10 @@ interface Document {
     /** @return A module ID inferred from the current document/import. */
     function _inferModuleId(): AmdModuleId {
         const script = document._currentScript || document.currentScript;
-        if (script && script.hasAttribute('data-as')) {
-            return <AmdModuleId>script.getAttribute('data-as');
+
+        const attrName = 'data-imd';
+        if (script && script.hasAttribute(attrName)) {
+            return <AmdModuleId>script.getAttribute(attrName);
         }
 
         const doc = script && script.ownerDocument || document;

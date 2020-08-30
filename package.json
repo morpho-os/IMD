@@ -2,7 +2,7 @@
   "name": "imd",
   "version": "1.0.0",
   "description": "Minimalistic AMD-compatible module loader",
-  "main": "imd.js",
+  "main": "index.js",
   "directories": {
     "test": "test"
   },

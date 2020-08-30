@@ -29,8 +29,9 @@
     define.amd = {};
     function _inferModuleId() {
         const script = document._currentScript || document.currentScript;
-        if (script && script.hasAttribute('data-as')) {
-            return script.getAttribute('data-as');
+        const attrName = 'data-imd';
+        if (script && script.hasAttribute(attrName)) {
+            return script.getAttribute(attrName);
         }
         const doc = script && script.ownerDocument || document;
         if (!doc.baseURI) {
@@ -99,4 +100,4 @@
     }
     globalScope.define = define;
 })(window);
-//# sourceMappingURL=imd.js.map
+//# sourceMappingURL=index.js.map

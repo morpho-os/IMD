@@ -20,7 +20,7 @@ npm install --save morpho-os/imd
 cat <<OUT > index.html
 <h1>IMD example</h1>
 
-<script src="node_modules/imd/imd.js"></script>
+<script src="node_modules/imd/index.js"></script>
 <script src="index.js"></script>
 OUT
 

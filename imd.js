@@ -1,7 +1,7 @@
 "use strict";
 (function (globalScope) {
     "use strict";
-    var _loadedModules = Object.create(null);
+    const _loadedModules = Object.create(null);
     function define(moduleId, dependencies, factory) {
         if (!factory) {
             factory = (dependencies || moduleId);
@@ -18,7 +18,7 @@
         if (moduleId in _loadedModules) {
             throw new Error('The module "' + moduleId + '" has already been defined');
         }
-        var base = moduleId.match(/^(.*?)[^\/]*$/)[1];
+        let base = moduleId.match(/^(.*?)[^\/]*$/)[1];
         if (base === '') {
             base = moduleId;
         }
@@ -28,13 +28,13 @@
     define._modules = _loadedModules;
     define.amd = {};
     function _inferModuleId() {
-        var script = document._currentScript || document.currentScript;
-        if (script && script.hasAttribute('as')) {
-            return script.getAttribute('as');
+        const script = document._currentScript || document.currentScript;
+        if (script && script.hasAttribute('data-as')) {
+            return script.getAttribute('data-as');
         }
-        var doc = script && script.ownerDocument || document;
+        const doc = script && script.ownerDocument || document;
         if (!doc.baseURI) {
-            throw new Error('Unable to determine a module id: No baseURI for the document');
+            throw new Error('Unable to determine a module ID: No baseURI for the document');
         }
         if (script && script.hasAttribute('src')) {
             return new URL(script.getAttribute('src'), doc.baseURI).pathname;
@@ -45,9 +45,9 @@
         if (typeof factory !== 'function') {
             return factory;
         }
-        var exports = {};
-        var module = { id: moduleId };
-        var modules;
+        const exports = {};
+        const module = { id: moduleId };
+        let modules;
         if (Array.isArray(dependencies)) {
             modules = dependencies.map(function (id) {
                 if (id === 'exports') {
@@ -66,19 +66,19 @@
         else {
             modules = [_require, exports, module];
         }
-        var result = factory.apply(null, modules);
+        const result = factory.apply(null, modules);
         return result || module.exports || exports;
     }
     function _resolveRelativeId(base, id) {
         if (id[0] !== '.') {
             return id;
         }
-        var match = base.match(/^([^\/]*\/\/[^\/]+\/)?(.*?)\/?$/);
-        var prefix = match[1] || '';
-        var terms = match[2] ? match[2].split('/') : [];
-        var idTerms = id.match(/^\/?(.*?)\/?$/)[1].split('/');
-        for (var i = 0; i < idTerms.length; i++) {
-            var idTerm = idTerms[i];
+        const match = base.match(/^([^\/]*\/\/[^\/]+\/)?(.*?)\/?$/);
+        const prefix = match[1] || '';
+        let terms = match[2] ? match[2].split('/') : [];
+        const idTerms = id.match(/^\/?(.*?)\/?$/)[1].split('/');
+        for (let i = 0; i < idTerms.length; i++) {
+            const idTerm = idTerms[i];
             if (idTerm === '.') {
                 continue;
             }

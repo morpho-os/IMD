@@ -32,7 +32,7 @@ interface Document {
      *
      * @param moduleId The id of the module being defined. If not provided,
      *     one will be given to the module based on the document it was called in.
-     * @param dependencies A list of module ids that should be
+     * @param dependencies A list of module IDs that should be
      *     exposed as dependencies of the module being defined.
      * @param factory A function that is given the exported
      *     values for `dependencies`, in the same order. Alternatively, you can
@@ -77,16 +77,16 @@ interface Document {
 
     // Utility
 
-    /** @return A module id inferred from the current document/import. */
+    /** @return A module ID inferred from the current document/import. */
     function _inferModuleId(): AmdModuleId {
         const script = document._currentScript || document.currentScript;
-        if (script && script.hasAttribute('as')) {
-            return <AmdModuleId>script.getAttribute('as');
+        if (script && script.hasAttribute('data-as')) {
+            return <AmdModuleId>script.getAttribute('data-as');
         }
 
         const doc = script && script.ownerDocument || document;
         if (!doc.baseURI) {
-            throw new Error('Unable to determine a module id: No baseURI for the document');
+            throw new Error('Unable to determine a module ID: No baseURI for the document');
         }
 
         if (script && script.hasAttribute('src')) {

@@ -1,15 +1,16 @@
 # IMD/Imports Module Definition
 
+## About
+
 IMD is extremely small implementation of the [AMD specification](https://github.com/amdjs/amdjs-api/blob/master/AMD.md) that does not perform any HTTP requests - it uses AMD modules which have already been defined via the `define()` function.
 
-An AMD module is the `define()` function call which defined a module and its dependencies, which are other AMD modules.
-
-## Usage cases
+An AMD module is the `define()` function call which defines a module and its dependencies from other AMD modules. The AMD modules are useful for encapsulation and explicit definition of dependencies.
 
 This implementation is useful in TypeScript projects which use [AMD modules](https://www.typescriptlang.org/tsconfig#amd).
 
 ## Usage example
 
+Create initial files:
 ```sh
 mkdir imd-example
 cd imd-example

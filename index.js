@@ -29,7 +29,7 @@
     define.amd = {};
     function _inferModuleId() {
         const script = document._currentScript || document.currentScript;
-        const attrName = 'data-imd';
+        const attrName = 'data-amd';
         if (script && script.hasAttribute(attrName)) {
             return script.getAttribute(attrName);
         }

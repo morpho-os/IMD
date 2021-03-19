@@ -81,7 +81,7 @@ interface Document {
     function _inferModuleId(): AmdModuleId {
         const script = document._currentScript || document.currentScript;
 
-        const attrName = 'data-imd';
+        const attrName = 'data-amd';
         if (script && script.hasAttribute(attrName)) {
             return <AmdModuleId>script.getAttribute(attrName);
         }

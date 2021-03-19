@@ -1,6 +1,6 @@
 all:
 	tsc --build
-	minify imd.js --no-comments --removeConsole --removeDebugger --out-file imd.min.js
+	terser --compress -o index.min.js index.js
 
 clean:
 	rm -f *.{js,js.map}
